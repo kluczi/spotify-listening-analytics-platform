@@ -1,7 +1,14 @@
 import os
 from spotipy.oauth2 import SpotifyOAuth
 
-SCOPE = "user-top-read user-read-recently-played playlist-read-private"
+SCOPE = " ".join(
+    (
+        "user-follow-read",
+        "user-library-read",
+        "user-read-recently-played",
+        "user-top-read",
+    )
+)
 
 
 def get_spotify_secrets() -> dict:

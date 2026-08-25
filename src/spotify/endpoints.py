@@ -1,5 +1,6 @@
-from .client import spotify_get
 from typing import Literal
+
+from .client import spotify_get
 
 TimeRange = Literal[
     "short_term",
@@ -39,7 +40,7 @@ def get_user_top_tracks(
 
 
 def get_user_top_artists(
-    time_range: str = "short_term",
+    time_range: TimeRange = "short_term",
     limit: int = 50,
     offset: int = 0,
 ) -> dict:
@@ -52,8 +53,10 @@ def get_user_top_artists(
     return spotify_get("me/top/artists", params)
 
 
-def get_user_followed_artists(limit: int = 50) -> dict:
+def get_user_followed_artists(limit: int = 50, after: str | None = None) -> dict:
     params = {"type": "artist", "limit": limit}
+    if after is not None:
+        params["after"] = after
 
     return spotify_get("me/following", params)
 
