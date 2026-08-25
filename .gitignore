@@ -216,3 +216,31 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local environment files and secrets
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+
+# Spotify OAuth token caches
+.cache-*
+.spotify-cache
+
+# Local databases and generated data
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+data/raw/
+data/processed/
+
+# Local ingestion smoke-test runner
+/src/ingestion/main.py
+
+# Editor and operating-system metadata
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
