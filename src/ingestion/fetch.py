@@ -1,7 +1,7 @@
 from collections.abc import Iterator
 from datetime import datetime, timedelta, timezone
 
-from spotify.endpoints import (
+from src.spotify.endpoints import (
     get_user_followed_artists,
     get_user_recently_played,
     get_user_saved_tracks,
