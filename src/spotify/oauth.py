@@ -1,5 +1,6 @@
 import os
 from spotipy.oauth2 import SpotifyOAuth
+from dotenv import load_dotenv
 
 SCOPE = " ".join(
     (
@@ -9,6 +10,8 @@ SCOPE = " ".join(
         "user-top-read",
     )
 )
+
+load_dotenv()
 
 
 def get_spotify_secrets() -> dict:
