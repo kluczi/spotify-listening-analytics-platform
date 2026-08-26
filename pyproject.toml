@@ -1,0 +1,12 @@
+[project]
+name = "spotify-listening-analytics-platform"
+version = "0.1.0"
+description = "end-to-end analytics listening platform"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "httpx>=0.28.1",
+    "python-dotenv>=1.2.3",
+    "snowflake-connector-python>=4.7.2",
+    "spotipy>=2.26.0",
+]
