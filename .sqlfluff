@@ -1,0 +1,7 @@
+[sqlfluff]
+dialect = snowflake
+templater = dbt
+
+[sqlfluff:templater:dbt]
+project_dir = ./spotify_analytics
+profiles_dir = ./spotify_analytics
