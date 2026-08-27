@@ -1,0 +1,53 @@
+version: 2
+
+sources:
+    - name: raw
+      tables:
+          - name: albums
+            columns:
+                - name: fetched_at
+                  data_type: timestamp_tz
+                - name: payload
+                  data_type: variant
+
+          - name: followed_artists
+            columns:
+                - name: fetched_at
+                  data_type: timestamp_tz
+                - name: payload
+                  data_type: variant
+
+          - name: recently_played_tracks
+            columns:
+                - name: fetched_at
+                  data_type: timestamp_tz
+                - name: payload
+                  data_type: variant
+
+          - name: saved_tracks
+            columns:
+                - name: fetched_at
+                  data_type: timestamp_tz
+                - name: payload
+                  data_type: variant
+
+          - name: top_artists
+            columns:
+                - name: fetched_at
+                  data_type: timestamp_tz
+                - name: payload
+                  data_type: variant
+
+          - name: top_tracks
+            columns:
+                - name: fetched_at
+                  data_type: timestamp_tz
+                - name: payload
+                  data_type: variant
+
+          - name: tracks
+            columns:
+                - name: fetched_at
+                  data_type: timestamp_tz
+                - name: payload
+                  data_type: variant
