@@ -10,3 +10,8 @@ dependencies = [
     "snowflake-connector-python>=4.7.2",
     "spotipy>=2.26.0",
 ]
+
+[dependency-groups]
+dev = [
+    "dbt-snowflake>=1.12,<2",
+]
