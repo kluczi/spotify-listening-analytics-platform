@@ -235,6 +235,7 @@ __marimo__/
 *.sqlite3
 data/raw/
 data/processed/
+/logs/
 
 # Local ingestion smoke-test runner
 /src/ingestion/main.py
