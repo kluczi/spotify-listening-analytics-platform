@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -eu
+
+repository_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+
+if [ ! -f "$repository_dir/.env" ]; then
+    echo "Missing $repository_dir/.env. Copy .env.example and add credentials." >&2
+    exit 1
+fi
+
+container run \
+    --rm \
+    --interactive \
+    --tty \
+    --env-file "$repository_dir/.env" \
+    --env SPOTIFY_CACHE_PATH=/opt/airflow/spotify-auth/cache \
+    --volume spotify-oauth-cache:/opt/airflow/spotify-auth \
+    spotify-airflow:3.3.1 \
+    python -c "from src.spotify.oauth import get_access_token; get_access_token(); print('Spotify OAuth cache is ready.')"

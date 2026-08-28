@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -eu
+
+container_name="spotify-airflow"
+
+if container list | awk -v name="$container_name" '
+    NR > 1 && $1 == name { found = 1 }
+    END { exit found ? 0 : 1 }
+'; then
+    container stop "$container_name"
+    echo "Airflow stopped. Metadata and logs remain in spotify-airflow-data."
+else
+    echo "Airflow is not running."
+fi
