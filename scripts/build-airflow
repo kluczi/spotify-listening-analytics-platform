@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+repository_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+
+container system status >/dev/null 2>&1 || container system start
+
+container build \
+    --tag spotify-airflow:3.3.1 \
+    --file "$repository_dir/airflow/Containerfile" \
+    "$repository_dir"

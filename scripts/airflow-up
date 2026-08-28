@@ -1,0 +1,93 @@
+#!/bin/sh
+
+set -eu
+
+repository_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+container_name="spotify-airflow"
+image_name="spotify-airflow:3.3.1"
+metadata_volume="spotify-airflow-data"
+oauth_volume="spotify-oauth-cache"
+
+if [ ! -f "$repository_dir/.env" ]; then
+    echo "Missing $repository_dir/.env. Copy .env.example and add credentials." >&2
+    exit 1
+fi
+
+container system status >/dev/null 2>&1 || container system start
+
+if ! container image list | awk -v image="$image_name" '
+    NR > 1 && ($1 ":" $2 == image || $1 == image) { found = 1 }
+    END { exit found ? 0 : 1 }
+'; then
+    "$repository_dir/scripts/build-airflow"
+fi
+
+if container list --all | awk -v name="$container_name" '
+    NR > 1 && $1 == name { found = 1 }
+    END { exit found ? 0 : 1 }
+'; then
+    if container list | awk -v name="$container_name" '
+        NR > 1 && $1 == name { found = 1 }
+        END { exit found ? 0 : 1 }
+    '; then
+        echo "Airflow is already running at http://localhost:8080"
+        echo "Restart it to apply credential changes from .env."
+        exit 0
+    fi
+
+    container rm "$container_name"
+fi
+
+for volume_name in "$metadata_volume" "$oauth_volume"; do
+    if ! container volume list | awk -v name="$volume_name" '
+        NR > 1 && $1 == name { found = 1 }
+        END { exit found ? 0 : 1 }
+    '; then
+        container volume create "$volume_name"
+    fi
+
+    container run --rm \
+        --volume "$volume_name:/data" \
+        docker.io/library/alpine:3.22 \
+        sh -c 'chown -R 50000:0 /data && chmod 0775 /data'
+done
+
+container run \
+    --name "$container_name" \
+    --detach \
+    --entrypoint sh \
+    --cpus 4 \
+    --memory 4G \
+    --env-file "$repository_dir/.env" \
+    --env AIRFLOW_HOME=/opt/airflow/runtime \
+    --env AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags \
+    --env AIRFLOW__CORE__LOAD_EXAMPLES=False \
+    --env SPOTIFY_CACHE_PATH=/opt/airflow/spotify-auth/cache \
+    --publish 8080:8080 \
+    --volume "$metadata_volume:/opt/airflow/runtime" \
+    --volume "$oauth_volume:/opt/airflow/spotify-auth" \
+    --volume "$repository_dir/airflow/dags:/opt/airflow/dags" \
+    "$image_name" \
+    -c '
+        if [ -z "${AIRFLOW_USERNAME:-}" ] || [ -z "${AIRFLOW_PASSWORD:-}" ]; then
+            echo "AIRFLOW_USERNAME and AIRFLOW_PASSWORD must be set in .env." >&2
+            exit 1
+        fi
+
+        export AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS="${AIRFLOW_USERNAME}:admin"
+        python -c "
+import json
+import os
+from pathlib import Path
+
+password_file = Path(os.environ[\"AIRFLOW_HOME\"]) / \"simple_auth_manager_passwords.json.generated\"
+password_file.write_text(
+    json.dumps({os.environ[\"AIRFLOW_USERNAME\"]: os.environ[\"AIRFLOW_PASSWORD\"]})
+)
+password_file.chmod(0o600)
+"
+        exec airflow standalone
+    '
+
+echo "Airflow is starting at http://localhost:8080"
+echo "Log in with AIRFLOW_USERNAME and AIRFLOW_PASSWORD from .env."

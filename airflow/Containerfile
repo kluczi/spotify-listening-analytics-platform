@@ -1,0 +1,26 @@
+FROM docker.io/apache/airflow:3.3.1-python3.14
+
+COPY airflow/requirements.txt /tmp/spotify-requirements.txt
+
+RUN pip install --no-cache-dir \
+    "apache-airflow==3.3.1" \
+    -r /tmp/spotify-requirements.txt
+
+WORKDIR /opt/airflow/project
+
+COPY --chown=airflow:root main.py pyproject.toml ./
+COPY --chown=airflow:root src ./src
+COPY --chown=airflow:root spotify_analytics ./spotify_analytics
+COPY --chown=airflow:root airflow/dags /opt/airflow/dags
+
+RUN dbt deps \
+    --project-dir /opt/airflow/project/spotify_analytics \
+    --profiles-dir /opt/airflow/project/spotify_analytics
+
+ENV AIRFLOW_HOME=/opt/airflow/runtime \
+    AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags \
+    AIRFLOW__CORE__LOAD_EXAMPLES=False \
+    PYTHONPATH=/opt/airflow/project \
+    SPOTIFY_CACHE_PATH=/opt/airflow/spotify-auth/cache
+
+WORKDIR /opt/airflow/project

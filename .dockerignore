@@ -1,0 +1,14 @@
+.git
+.env
+.env.*
+.venv
+__pycache__
+*.py[cod]
+.pytest_cache
+.ruff_cache
+.spotify-cache
+evidence/.evidence
+spotify_analytics/dbt_packages
+spotify_analytics/logs
+spotify_analytics/target
+airflow/runtime
