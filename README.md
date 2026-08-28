@@ -5,6 +5,8 @@ stores the raw API responses in Snowflake, transforms them with dbt, schedules
 the pipeline with Airflow, and presents a mini wrapped-style dashboard in
 Evidence.
 
+![Spotify analytics dashboard preview](dashboard_preview.png)
+
 ## Architecture
 
 ```text
