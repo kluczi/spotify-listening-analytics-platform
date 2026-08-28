@@ -5,6 +5,7 @@ with recently_played as (
         primary_artist_id,
         album_type,
         album_release_date,
+        album_image_url,
         fetched_at
     from {{ ref('stg_spotify__recently_played') }}
 
@@ -17,6 +18,7 @@ top_tracks as (
         primary_artist_id,
         album_type,
         album_release_date,
+        album_image_url,
         fetched_at
     from {{ ref('stg_spotify__top_tracks') }}
 ),
@@ -28,6 +30,7 @@ saved_tracks as (
         primary_artist_id,
         album_type,
         album_release_date,
+        album_image_url,
         fetched_at
     from {{ ref('stg_spotify__saved_tracks') }}
 ),
@@ -47,6 +50,7 @@ final as (
         primary_artist_id,
         album_type,
         album_release_date,
+        album_image_url,
         fetched_at
     from unioned
     qualify row_number() over (

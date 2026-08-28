@@ -3,5 +3,6 @@ select
     album_name,
     album_type,
     album_release_date,
+    album_image_url,
     fetched_at
 from {{ ref('int_spotify__albums') }}

@@ -5,3 +5,4 @@ logs/
 .env
 dbt_internal_packages/
 .user.yml
+models/marts/IDEAS.md

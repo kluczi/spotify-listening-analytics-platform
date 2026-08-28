@@ -41,7 +41,9 @@ final as (
 
     qualify row_number() over (
         partition by artist_id
-        order by fetched_at desc
+        order by
+            case when image_url is null then 1 else 0 end,
+            fetched_at desc
     ) = 1
 )
 
