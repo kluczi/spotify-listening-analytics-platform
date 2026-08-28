@@ -8,6 +8,7 @@ with source as (
         payload:album:name::string as album_name,
         payload:album:album_type::string as album_type,
         payload:album:release_date::date as album_release_date,
+        payload:album:images[1]:url::string as album_image_url,
         fetched_at,
         round(payload:duration_ms::number / 1000, 2) as duration_s,
         payload:artists as artists
