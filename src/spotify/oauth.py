@@ -29,13 +29,14 @@ def get_spotify_secrets() -> dict:
 
 def get_access_token() -> str:
     secrets = get_spotify_secrets()
+    cache_path = os.getenv("SPOTIFY_CACHE_PATH", ".spotify-cache")
 
     auth_manager = SpotifyOAuth(
         client_id=secrets["client_id"],
         client_secret=secrets["client_secret"],
         redirect_uri=secrets["redirect_uri"],
         scope=SCOPE,
-        cache_path=".spotify-cache",
+        cache_path=cache_path,
     )
 
     token_info = auth_manager.get_cached_token()
