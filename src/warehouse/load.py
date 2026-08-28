@@ -3,6 +3,7 @@ from datetime import timezone, datetime
 from collections.abc import Iterator
 
 
+DATABASE = "SPOTIFY_ANALYTICS"
 SCHEMA = "RAW"
 
 
@@ -12,7 +13,7 @@ def load_batch(conn, table: str, items: list[dict]) -> None:
     with conn.cursor() as cursor:
         cursor.executemany(
             f"""
-                    insert into {SCHEMA}.{table} (
+                    insert into {DATABASE}.{SCHEMA}.{table} (
                         fetched_at,
                         payload
                     )
