@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -eu
+
+repository_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+project_dir="$repository_dir/evidence"
+local_cli="$project_dir/.evidence/evidence"
+
+if [ -f "$repository_dir/.env" ]; then
+    set -a
+    # shellcheck disable=SC1091
+    . "$repository_dir/.env"
+    set +a
+fi
+
+if [ -x "$local_cli" ]; then
+    evidence_cli="$local_cli"
+elif command -v evidence >/dev/null 2>&1; then
+    evidence_cli=$(command -v evidence)
+else
+    echo "Evidence CLI is not installed." >&2
+    echo "Install it with: curl -fsSL https://evidence.studio/install.sh | sh" >&2
+    exit 1
+fi
+
+cd "$project_dir"
+exec "$evidence_cli" "$@"

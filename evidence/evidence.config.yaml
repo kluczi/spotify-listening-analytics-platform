@@ -1,0 +1,5 @@
+project:
+  name: Spotify Listening Analytics
+  evidence: "0.9.1"
+
+pages: ./pages
