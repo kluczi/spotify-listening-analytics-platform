@@ -1,0 +1,10 @@
+type: snowflake
+account: ${SNOWFLAKE_ACCOUNT}
+user: ${SNOWFLAKE_USER}
+password: ${SNOWFLAKE_PASSWORD}
+warehouse: ${SNOWFLAKE_WAREHOUSE}
+database: SPOTIFY_ANALYTICS
+role: ${SNOWFLAKE_ROLE}
+schema:
+  production: ANALYTICS
+  devSchemas: []

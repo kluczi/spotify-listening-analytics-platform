@@ -1,0 +1,10 @@
+{
+  "name": "my-project",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "../scripts/evidence dev",
+    "validate": "../scripts/evidence validate",
+    "tables": "../scripts/evidence tables"
+  },
+  "type": "module"
+}
