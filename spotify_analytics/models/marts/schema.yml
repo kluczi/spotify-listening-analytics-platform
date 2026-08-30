@@ -1,0 +1,195 @@
+version: 2
+
+models:
+    - name: int_spotify__tracks
+      description: Latest known attributes for each Spotify track.
+      columns:
+          - name: track_id
+            description: Spotify's unique track identifier.
+            tests:
+                - not_null
+                - unique
+          - name: track_name
+            tests:
+                - not_null
+          - name: album_id
+            tests:
+                - not_null
+
+    - name: int_spotify__artists
+      description: Latest known attributes for each Spotify artist, preferring records with an image.
+      columns:
+          - name: artist_id
+            description: Spotify's unique artist identifier.
+            tests:
+                - not_null
+                - unique
+          - name: artist_name
+            tests:
+                - not_null
+
+    - name: int_spotify__albums
+      description: Latest known attributes for each Spotify album.
+      columns:
+          - name: album_id
+            description: Spotify's unique album identifier.
+            tests:
+                - not_null
+                - unique
+          - name: album_name
+            tests:
+                - not_null
+
+    - name: int_spotify__track_artists
+      description: Track-to-artist relationships extracted from Spotify track payloads.
+      tests:
+          - dbt_utils.unique_combination_of_columns:
+                arguments:
+                    combination_of_columns:
+                        - track_id
+                        - artist_id
+      columns:
+          - name: track_id
+            tests:
+                - not_null
+          - name: artist_id
+            tests:
+                - not_null
+
+    - name: dim_track
+      description: Track dimension used by listening facts and reports.
+      columns:
+          - name: track_id
+            tests:
+                - not_null
+                - unique
+          - name: track_name
+            tests:
+                - not_null
+          - name: album_id
+            tests:
+                - not_null
+
+    - name: dim_artist
+      description: Artist dimension used by listening reports.
+      columns:
+          - name: artist_id
+            tests:
+                - not_null
+                - unique
+          - name: artist_name
+            tests:
+                - not_null
+
+    - name: dim_album
+      description: Album dimension used by track reports.
+      columns:
+          - name: album_id
+            tests:
+                - not_null
+                - unique
+          - name: album_name
+            tests:
+                - not_null
+
+    - name: bridge_tracks_artists
+      description: Many-to-many bridge between tracks and their artists.
+      tests:
+          - dbt_utils.unique_combination_of_columns:
+                arguments:
+                    combination_of_columns:
+                        - track_id
+                        - artist_id
+      columns:
+          - name: track_id
+            tests:
+                - not_null
+          - name: artist_id
+            tests:
+                - not_null
+
+    - name: fct_listening_history
+      description: Deduplicated listening events from Spotify recently played history.
+      columns:
+          - name: listening_event_id
+            description: Surrogate key for a played track event.
+            tests:
+                - not_null
+                - unique
+          - name: track_id
+            tests:
+                - not_null
+                - relationships:
+                      arguments:
+                          to: ref('dim_track')
+                          field: track_id
+          - name: played_at
+            tests:
+                - not_null
+          - name: fetched_at
+            tests:
+                - not_null
+
+    - name: rpt_listening_calendar_daily
+      description: Daily listening activity for the calendar heatmap.
+      columns:
+          - name: listening_date
+            tests:
+                - not_null
+                - unique
+          - name: total_plays
+            tests:
+                - not_null
+          - name: listening_minutes
+            tests:
+                - not_null
+
+    - name: rpt_top_tracks_30d
+      description: Top five tracks by estimated listening minutes in the last 30 days.
+      columns:
+          - name: ranking_position
+            tests:
+                - not_null
+                - unique
+          - name: track_id
+            tests:
+                - not_null
+          - name: track_name
+            tests:
+                - not_null
+          - name: listening_minutes
+            tests:
+                - not_null
+
+    - name: rpt_top_artists_30d
+      description: Top five artists by estimated listening minutes in the last 30 days.
+      columns:
+          - name: ranking_position
+            tests:
+                - not_null
+                - unique
+          - name: artist_id
+            tests:
+                - not_null
+          - name: artist_name
+            tests:
+                - not_null
+          - name: listening_minutes
+            tests:
+                - not_null
+
+    - name: rpt_mini_wrapped
+      description: Single-row summary of the last 30 days of listening activity.
+      columns:
+          - name: total_plays
+            tests:
+                - not_null
+          - name: listening_minutes
+            tests:
+                - not_null
+          - name: unique_tracks
+            tests:
+                - not_null
+          - name: unique_artists
+            tests:
+                - not_null

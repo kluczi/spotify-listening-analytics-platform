@@ -1,0 +1,79 @@
+version: 2
+
+models:
+    - name: stg_spotify__recently_played
+      description: Recently played Spotify tracks parsed from the raw payload.
+      columns:
+          - name: track_id
+            tests:
+                - not_null
+          - name: track_name
+            tests:
+                - not_null
+          - name: played_at
+            tests:
+                - not_null
+          - name: fetched_at
+            tests:
+                - not_null
+          - name: artists
+            description: Array of all artists credited on the track.
+
+    - name: stg_spotify__saved_tracks
+      description: Saved Spotify tracks parsed from the raw payload.
+      columns:
+          - name: track_id
+            tests:
+                - not_null
+          - name: track_name
+            tests:
+                - not_null
+          - name: added_at
+            tests:
+                - not_null
+          - name: fetched_at
+            tests:
+                - not_null
+          - name: artists
+            description: Array of all artists credited on the track.
+
+    - name: stg_spotify__top_tracks
+      description: Spotify top tracks parsed from the raw payload.
+      columns:
+          - name: track_id
+            tests:
+                - not_null
+          - name: track_name
+            tests:
+                - not_null
+          - name: fetched_at
+            tests:
+                - not_null
+          - name: artists
+            description: Array of all artists credited on the track.
+
+    - name: stg_spotify__top_artists
+      description: Spotify top artists parsed from the raw payload.
+      columns:
+          - name: artist_id
+            tests:
+                - not_null
+          - name: artist_name
+            tests:
+                - not_null
+          - name: fetched_at
+            tests:
+                - not_null
+
+    - name: stg_spotify__followed_artists
+      description: Artists followed by the Spotify user parsed from the raw payload.
+      columns:
+          - name: artist_id
+            tests:
+                - not_null
+          - name: artist_name
+            tests:
+                - not_null
+          - name: fetched_at
+            tests:
+                - not_null
